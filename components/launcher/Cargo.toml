@@ -1,0 +1,18 @@
+[package]
+name = "habitat_launcher"
+version = "0.1.0"
+authors = ["Jamie Winsor <reset@habitat.sh>"]
+workspace = "../../"
+
+[[bin]]
+name = "hab-launcher"
+doc = false
+
+[dependencies]
+# JW TODO: core has external deps that we don't want, libarchive/libsodium. We should either
+# put these things behind a feature flag so we can statically compile the launcher.
+habitat_core = { path = "../core" }
+habitat-launcher-protocol = { path = "../launcher-protocol" }
+ipc-channel = "*"
+libc = "*"
+protobuf = "*"

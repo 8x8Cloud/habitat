@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Chef Software Inc. and/or applicable contributors
+// Copyright (c) 2017 Chef Software Inc. and/or applicable contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,17 +18,17 @@
 /// spawning the new process, watching for failure, and ensuring the service is either up or down.
 /// If the process dies, the supervisor will restart it.
 
+mod child;
+
 use std;
 use std::fmt;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
 use std::path::PathBuf;
-use std::process::Child;
 use std::result;
 use std::thread;
 
-use hcore::os::process::{HabChild, ExitStatusExt};
 use hcore::util::perm::set_owner;
 use hcore::service::ServiceGroup;
 use serde::{Serialize, Serializer};
@@ -36,6 +36,7 @@ use serde::ser::SerializeStruct;
 use time::{self, Timespec};
 
 use super::exec;
+use self::Child;
 use error::{Result, Error};
 use manager::service::Pkg;
 
@@ -63,7 +64,7 @@ impl fmt::Display for ProcessState {
 
 #[derive(Debug)]
 pub struct Supervisor {
-    pub child: Option<HabChild>,
+    pub child: Option<Child>,
     pub preamble: String,
     pub state: ProcessState,
     pub state_entered: Timespec,
@@ -117,7 +118,7 @@ impl Supervisor {
                   &pkg.svc_group);
         self.enter_state(ProcessState::Start);
         let mut child = exec::run_cmd(&pkg.svc_run, &pkg)?.spawn()?;
-        self.child = Some(HabChild::from(&mut child)?);
+        self.child = Some(Child::from(&mut child)?);
         self.create_pidfile(pkg)?;
         let package_name = self.preamble.clone();
         thread::Builder::new()

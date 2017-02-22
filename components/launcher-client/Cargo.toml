@@ -1,0 +1,14 @@
+[package]
+name = "habitat-launcher-client"
+version = "0.1.0"
+authors = ["Jamie Winsor <reset@habitat.sh>"]
+
+[[bin]]
+name = "launcher-client"
+doc = false
+
+[dependencies]
+habitat-launcher-protocol = { path = "../launcher-protocol" }
+ipc-channel = "*"
+protobuf = "*"
+serde = "*"

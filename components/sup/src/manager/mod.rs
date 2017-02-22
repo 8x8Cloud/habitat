@@ -559,7 +559,6 @@ impl Manager {
                 true
             }
             Some(SignalEvent::Passthrough(signal)) => {
-                println!("GOT PASSTHROUGH {:?}", signal);
                 for service in self.services
                         .read()
                         .expect("Services lock is poisoned!")
