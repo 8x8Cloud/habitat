@@ -39,6 +39,26 @@ fn create_origin_poop() {
 }
 
 #[test]
+fn create_origin_handles_unique_constraint_violations_correctly() {
+    let ds = datastore_test!(DataStore);
+    let mut origin = originsrv::OriginCreate::new();
+    origin.set_name(String::from("neurosis"));
+    origin.set_owner_id(1);
+    origin.set_owner_name(String::from("scottkelly"));
+    ds.create_origin(&origin).expect("Should create origin");
+
+    let mut origin2 = originsrv::OriginCreate::new();
+    origin.set_name(String::from("neurosis"));
+    origin.set_owner_id(1);
+    origin.set_owner_name(String::from("scottkelly"));
+    let resp = ds.create_origin(&origin2);
+
+    println!("********* resp = {:?}", &resp);
+
+    assert!(resp.is_err(), "Insertion should've triggered an error");
+}
+
+#[test]
 fn get_origin_by_name() {
     let ds = datastore_test!(DataStore);
     let mut origin = originsrv::OriginCreate::new();
